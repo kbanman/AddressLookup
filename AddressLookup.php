@@ -1,9 +1,9 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php
 
 /**
  * Address Lookup Class
  *
- * Perform Reverse Address, Reverse Phone, Postal Code
+ * Perform Reverse Address, Reverse Phone, Postal Code and Reverse Geo-coding
  * (Currently only supports Canadian addresses)
  *
  * @package		AddressLookup
@@ -11,6 +11,7 @@
  * @license		http://philsturgeon.co.uk/code/dbad-license
  * @link		https://github.com/kbanman/AddressLookup
  */
+ 
 class AddressLookup {
 
 	protected $dom;	 // Instance of DomDocument
@@ -75,7 +76,7 @@ class AddressLookup {
 			'phone' => $this->digitize_phone($phone->textContent),
 		);
 
-		return $result;
+		return array($result);
 	}
 
 	public function reverse_phone($num)
@@ -303,6 +304,3 @@ class AddressLookup {
 		$this->google_api_key = $key;
 	}
 }
-
-/* End of file Curl.php */
-/* Location: ./application/libraries/Curl.php */

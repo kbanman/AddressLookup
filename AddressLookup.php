@@ -11,7 +11,7 @@
  * @license		http://philsturgeon.co.uk/code/dbad-license
  * @link		https://github.com/kbanman/AddressLookup
  */
- 
+
 class AddressLookup {
 
 	protected $dom;	 // Instance of DomDocument
@@ -180,19 +180,37 @@ class AddressLookup {
 		return $results;
 	}
 
-	public function getCoordsForAddress($address)
+	public function reverse_geocode($street, $city, $province)
 	{
-		$url = 'http://maps.google.com/maps/geo?q='. urlencode(str_replace('?','',$address)) . '&output=csv&sensor=false&key='.$this->google_api_key;
+		$statae = array(
+			200 => 'Success',
+			400 => 'Bad Request',
+			500 => 'Server Error',
+			601 => 'Missing Query',
+			602 => 'Unknown Address',
+			610 => 'Bad Key',
+			620 => 'Too Many Queries',
+		);
+		$query = array(
+			'q' => rawurlencode($street.' '.$city.' '.$province),
+			'output' => 'csv',
+			'sensor' => 'false',
+			'key' => $this->google_api_key,
+		);
+		$url = 'http://maps.google.com/maps/geo?'.http_build_query($query);
 		$response= explode(',',file_get_contents($url));
 		$output = array(
 			'status' => (int)$response[0],
+			'status_message' => $statae[(int)$response[0]],
 			'accuracy' => (int)$response[1],
 			'coords' => array(
 				'lat' => (float)$response[2],
-				'lng' => (float)$response[3]
-			)
+				'lng' => (float)$response[3],
+			),
+			'street' => $street,
+			'city' => $city,
+			'province' => $province,
 		);
-		unset($response);
 		return $output;
 	}
 
